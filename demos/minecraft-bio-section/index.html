@@ -8,11 +8,13 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#stationList">Skip the 3D world and read the stations</a>
+
   <section class="mc-section" aria-labelledby="mc-title">
     <div class="hud top-left">
       <p class="eyebrow">Interactive portfolio section</p>
       <h1 id="mc-title">Walk through my world</h1>
-      <p class="intro">Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys to move. Drag / move your mouse to look around. Walk near glowing signs to reveal real info.</p>
+      <p class="intro">Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, arrows, touch controls, or the station buttons. Drag/touch the world to look around.</p>
     </div>
 
     <div class="hud top-right" aria-live="polite">
@@ -20,7 +22,7 @@
       <p id="positionLabel">Spawn: Portfolio Plaza</p>
     </div>
 
-    <canvas id="world" width="1280" height="720" aria-label="Interactive blocky world with portfolio stations"></canvas>
+    <canvas id="world" width="1280" height="720" tabindex="0" aria-label="Interactive blocky world with portfolio stations. Use keyboard, touch controls, or station buttons to explore."></canvas>
 
     <aside class="info-card" id="infoCard" aria-live="polite">
       <p class="card-kicker">Approach a sign</p>
@@ -33,7 +35,11 @@
       </ul>
     </aside>
 
-    <div class="controls" aria-label="Mobile movement controls">
+    <div class="controls" aria-label="Mobile movement and look controls">
+      <div class="look-row" aria-label="Look controls">
+        <button data-look="left" aria-label="Look left">↺</button>
+        <button data-look="right" aria-label="Look right">↻</button>
+      </div>
       <button data-move="forward" aria-label="Move forward">▲</button>
       <div>
         <button data-move="left" aria-label="Move left">◀</button>
@@ -41,6 +47,11 @@
         <button data-move="right" aria-label="Move right">▶</button>
       </div>
     </div>
+
+    <nav class="station-drawer" aria-labelledby="stationListTitle">
+      <p class="card-kicker" id="stationListTitle">Accessible station list</p>
+      <div id="stationList" class="station-list"></div>
+    </nav>
   </section>
 
   <noscript>This interactive section needs JavaScript enabled.</noscript>

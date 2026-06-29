@@ -14,8 +14,18 @@ Open: <http://127.0.0.1:8787>
 ## Controls
 
 - Move: `WASD` or arrow keys
-- Look: mouse/touch drag
-- Mobile: on-screen direction buttons
+- Look: mouse/touch drag, or the mobile look buttons
+- Mobile: on-screen movement/look controls
+- Accessible fallback: use the station list buttons to jump directly to each info station without needing to navigate the 3D space
+
+## Mobile/accessibility notes
+
+- Canvas is focusable and has a descriptive ARIA label.
+- There is a skip link to jump directly to the station list.
+- All station content is exposed as real HTML in the info card, not canvas-only text.
+- Touch controls use large tap targets and avoid browser scroll/pinch conflicts on the canvas.
+- Focus-visible outlines are included for keyboard users.
+- The layout compresses the HUD, info card, controls, and station list for narrow screens.
 
 ## Stations included
 

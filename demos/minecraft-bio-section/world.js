@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 const infoCard = document.getElementById('infoCard');
 const positionLabel = document.getElementById('positionLabel');
 const miniMap = document.getElementById('miniMap');
+const stationList = document.getElementById('stationList');
 
 const WORLD = {
   width: 28,
@@ -21,6 +22,8 @@ const keys = new Set();
 let dragging = false;
 let lastPointerX = 0;
 let lastTime = performance.now();
+let activeStationId = 'spawn';
+let targetStationId = null;
 
 const stations = [
   {
@@ -75,6 +78,38 @@ const stations = [
   },
 ];
 
+function renderStationButtons() {
+  stationList.innerHTML = stations.map(station => `
+    <button type="button" data-station="${station.id}" aria-current="${station.id === activeStationId ? 'true' : 'false'}">
+      ${station.title}
+    </button>
+  `).join('');
+
+  for (const button of stationList.querySelectorAll('[data-station]')) {
+    button.addEventListener('click', () => focusStation(button.dataset.station));
+  }
+}
+
+function focusStation(id) {
+  const station = stations.find(s => s.id === id);
+  if (!station) return;
+  const offset = station.id === 'spawn' ? 1.8 : 1.35;
+  player.x = station.x * WORLD.cell;
+  player.y = (station.y + offset) * WORLD.cell;
+  player.angle = -Math.PI / 2;
+  targetStationId = station.id;
+  setInfo(station, true);
+  updateStationButtons(station.id);
+  canvas.focus({ preventScroll: true });
+}
+
+function updateStationButtons(id) {
+  activeStationId = id;
+  for (const button of stationList.querySelectorAll('[data-station]')) {
+    button.setAttribute('aria-current', button.dataset.station === id ? 'true' : 'false');
+  }
+}
+
 const blocks = [];
 for (let x = 0; x < WORLD.width; x++) {
   for (let y = 0; y < WORLD.height; y++) {
@@ -115,6 +150,7 @@ function update(dt) {
   if (keys.has('d') || keys.has('arrowright')) strafe += 1;
 
   const mag = Math.hypot(forward, strafe) || 1;
+  if (forward || strafe) targetStationId = null;
   forward /= mag;
   strafe /= mag;
 
@@ -127,8 +163,13 @@ function update(dt) {
   if (!isBlocked(player.x, ny)) player.y = clamp(ny, WORLD.cell * 1.5, WORLD.cell * (WORLD.height - 1.5));
 
   const nearest = getNearestStation();
-  if (nearest && nearest.dist < WORLD.cell * 2.1) setInfo(nearest.station, true);
-  else setInfo(stations[0], false);
+  if (nearest && nearest.dist < WORLD.cell * 2.1) {
+    setInfo(nearest.station, true);
+    updateStationButtons(nearest.station.id);
+  } else if (!targetStationId) {
+    setInfo(stations[0], false);
+    updateStationButtons('spawn');
+  }
 
   const cx = Math.floor(player.x / WORLD.cell);
   const cy = Math.floor(player.y / WORLD.cell);
@@ -330,17 +371,28 @@ canvas.addEventListener('pointermove', e => {
   if (!dragging) return;
   const dx = e.clientX - lastPointerX;
   player.angle += dx * 0.006;
+  targetStationId = null;
   lastPointerX = e.clientX;
 });
 
 for (const btn of document.querySelectorAll('[data-move]')) {
   const map = { forward: 'w', back: 's', left: 'a', right: 'd' };
   const key = map[btn.dataset.move];
-  btn.addEventListener('pointerdown', e => { e.preventDefault(); keys.add(key); });
+  btn.addEventListener('pointerdown', e => { e.preventDefault(); keys.add(key); targetStationId = null; });
   btn.addEventListener('pointerup', () => keys.delete(key));
   btn.addEventListener('pointerleave', () => keys.delete(key));
 }
 
+for (const btn of document.querySelectorAll('[data-look]')) {
+  const direction = btn.dataset.look === 'left' ? -1 : 1;
+  btn.addEventListener('click', e => {
+    e.preventDefault();
+    player.angle += direction * 0.26;
+    targetStationId = null;
+  });
+}
+
+renderStationButtons();
 resizeCanvas();
 setInfo(stations[0], false);
 requestAnimationFrame(loop);
