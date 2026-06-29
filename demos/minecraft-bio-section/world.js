@@ -103,10 +103,13 @@ function focusStation(id) {
 }
 
 function placeCameraForStation(station) {
-  const offset = station.id === 'spawn' ? 1.8 : 1.35;
+  // Keep each sign close enough to feel like the visitor has walked up to it.
+  // The carousel already controls navigation, so the camera can sit near the sign
+  // instead of holding a distant first-person walking buffer.
+  const offset = station.id === 'spawn' ? 1.15 : 1.0;
   player.x = station.x * WORLD.cell;
   player.y = (station.y + offset) * WORLD.cell;
-  player.angle = -Math.PI / 2;
+  player.angle = Math.PI;
 }
 
 function navigateStation(direction) {
@@ -282,9 +285,11 @@ function project(wx, wy) {
   const fov = canvas.clientWidth < 520 ? 330 : 450;
   const screenX = canvas.clientWidth / 2 + (rx / depth) * fov;
   const horizon = canvas.clientHeight * (canvas.clientWidth < 520 ? 0.49 : 0.52);
+  const foregroundLift = clamp(1 - depth / 950, 0, 1) * canvas.clientHeight * (canvas.clientWidth < 520 ? 0.28 : 0.34);
+  const screenY = horizon + foregroundLift;
   const size = (WORLD.cell / depth) * fov;
   const visibleWidth = canvas.clientWidth < 520 ? 1.05 : 0.9;
-  return { visible: ry > 24 && Math.abs(screenX - canvas.clientWidth / 2) < canvas.clientWidth * visibleWidth, x: screenX, y: horizon, depth, size };
+  return { visible: ry > 24 && Math.abs(screenX - canvas.clientWidth / 2) < canvas.clientWidth * visibleWidth, x: screenX, y: screenY, depth, size };
 }
 
 function drawRenderable(item) {
@@ -347,21 +352,23 @@ function drawBlock(item) {
 }
 
 function drawStation(item) {
-  const { x, y, size } = item.view;
+  const { x, y, depth } = item.view;
+  const visualSize = clamp(item.view.size, 34, canvas.clientWidth < 520 ? 118 : 150);
   const nearest = getNearestStation();
   const near = nearest?.station.id === item.id && nearest?.dist < WORLD.cell * 2.1;
-  const signW = Math.max(48, size * 1.65);
-  const signH = Math.max(30, size * 0.8);
-  const poleH = Math.max(34, size * 1.18);
-  const beaconH = Math.max(70, size * 2.4);
+  const signW = Math.max(58, visualSize * 1.55);
+  const signH = Math.max(36, visualSize * 0.7);
+  const poleH = Math.max(40, visualSize * 0.95);
+  const beaconH = Math.max(78, visualSize * 1.75);
+  const fog = clamp(depth / 1400, 0, 0.42);
 
   ctx.save();
   ctx.shadowColor = item.color;
   ctx.shadowBlur = near ? 42 : 22;
   ctx.globalAlpha = near ? 0.42 : 0.25;
   ctx.fillStyle = item.color;
-  ctx.fillRect(x - Math.max(4, size * 0.08), y - beaconH, Math.max(8, size * 0.16), beaconH);
-  ctx.globalAlpha = 1;
+  ctx.fillRect(x - Math.max(4, visualSize * 0.08), y - beaconH, Math.max(8, visualSize * 0.16), beaconH);
+  ctx.globalAlpha = 1 - fog;
 
   ctx.fillStyle = '#2a170d';
   ctx.fillRect(x - 4, y - poleH, 8, poleH);
