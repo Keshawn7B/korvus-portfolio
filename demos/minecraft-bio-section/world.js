@@ -23,7 +23,8 @@ let dragging = false;
 let lastPointerX = 0;
 let lastTime = performance.now();
 let activeStationId = 'spawn';
-let targetStationId = null;
+let targetStationId = 'spawn';
+let activeStationIndex = 0;
 
 const stations = [
   {
@@ -34,7 +35,7 @@ const stations = [
     title: 'Spawn: Portfolio Plaza',
     kicker: 'Welcome',
     body: 'This section turns a normal About page into a tiny explorable world. Each sign is a real portfolio story instead of generic resume copy.',
-    bullets: ['Blocky first-person exploration', 'Keyboard, mouse, and mobile controls', 'Designed to drop into a portfolio site'],
+    bullets: ['Blocky guided exploration', 'Simple left/right tour controls', 'Designed to drop into a portfolio site'],
   },
   {
     id: 'ai-system',
@@ -93,14 +94,24 @@ function renderStationButtons() {
 function focusStation(id) {
   const station = stations.find(s => s.id === id);
   if (!station) return;
-  const offset = station.id === 'spawn' ? 1.8 : 1.35;
-  player.x = station.x * WORLD.cell;
-  player.y = (station.y + offset) * WORLD.cell;
-  player.angle = -Math.PI / 2;
+  activeStationIndex = stations.findIndex(s => s.id === id);
+  placeCameraForStation(station);
   targetStationId = station.id;
   setInfo(station, true);
   updateStationButtons(station.id);
   canvas.focus({ preventScroll: true });
+}
+
+function placeCameraForStation(station) {
+  const offset = station.id === 'spawn' ? 1.8 : 1.35;
+  player.x = station.x * WORLD.cell;
+  player.y = (station.y + offset) * WORLD.cell;
+  player.angle = -Math.PI / 2;
+}
+
+function navigateStation(direction) {
+  activeStationIndex = (activeStationIndex + direction + stations.length) % stations.length;
+  focusStation(stations[activeStationIndex].id);
 }
 
 function updateStationButtons(id) {
@@ -165,39 +176,9 @@ function isBlocked(nx, ny) {
   return blocks.some(b => b.x === cx && b.y === cy);
 }
 
-function update(dt) {
-  let forward = 0;
-  let strafe = 0;
-  if (keys.has('w') || keys.has('arrowup')) forward += 1;
-  if (keys.has('s') || keys.has('arrowdown')) forward -= 1;
-  if (keys.has('a') || keys.has('arrowleft')) strafe -= 1;
-  if (keys.has('d') || keys.has('arrowright')) strafe += 1;
-
-  const mag = Math.hypot(forward, strafe) || 1;
-  if (forward || strafe) targetStationId = null;
-  forward /= mag;
-  strafe /= mag;
-
-  const moveX = Math.cos(player.angle) * forward + Math.cos(player.angle + Math.PI / 2) * strafe;
-  const moveY = Math.sin(player.angle) * forward + Math.sin(player.angle + Math.PI / 2) * strafe;
-  const nx = player.x + moveX * player.speed * dt;
-  const ny = player.y + moveY * player.speed * dt;
-
-  if (!isBlocked(nx, player.y)) player.x = clamp(nx, WORLD.cell * 1.5, WORLD.cell * (WORLD.width - 1.5));
-  if (!isBlocked(player.x, ny)) player.y = clamp(ny, WORLD.cell * 1.5, WORLD.cell * (WORLD.height - 1.5));
-
-  const nearest = getNearestStation();
-  if (nearest && nearest.dist < WORLD.cell * 2.1) {
-    setInfo(nearest.station, true);
-    updateStationButtons(nearest.station.id);
-  } else if (!targetStationId) {
-    setInfo(stations[0], false);
-    updateStationButtons('spawn');
-  }
-
-  const cx = Math.floor(player.x / WORLD.cell);
-  const cy = Math.floor(player.y / WORLD.cell);
-  positionLabel.textContent = `x:${cx} z:${cy}`;
+function update() {
+  const station = stations[activeStationIndex] || stations[0];
+  positionLabel.textContent = `${activeStationIndex + 1}/${stations.length}: ${station.title}`;
 }
 
 function draw() {
@@ -475,41 +456,41 @@ function loop(now) {
 }
 
 window.addEventListener('resize', resizeCanvas);
-window.addEventListener('keydown', e => keys.add(e.key.toLowerCase()));
-window.addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
+window.addEventListener('keydown', e => {
+  const key = e.key.toLowerCase();
+  if (e.repeat) return;
+  if (key === 'arrowleft' || key === 'a') {
+    e.preventDefault();
+    navigateStation(-1);
+  }
+  if (key === 'arrowright' || key === 'd') {
+    e.preventDefault();
+    navigateStation(1);
+  }
+});
 
 canvas.addEventListener('pointerdown', e => {
   dragging = true;
   lastPointerX = e.clientX;
   canvas.setPointerCapture(e.pointerId);
 });
-canvas.addEventListener('pointerup', () => { dragging = false; });
-canvas.addEventListener('pointermove', e => {
+canvas.addEventListener('pointerup', e => {
   if (!dragging) return;
   const dx = e.clientX - lastPointerX;
-  player.angle += dx * 0.006;
-  targetStationId = null;
-  lastPointerX = e.clientX;
+  dragging = false;
+  if (Math.abs(dx) > 42) navigateStation(dx < 0 ? 1 : -1);
 });
+canvas.addEventListener('pointercancel', () => { dragging = false; });
 
-for (const btn of document.querySelectorAll('[data-move]')) {
-  const map = { forward: 'w', back: 's', left: 'a', right: 'd' };
-  const key = map[btn.dataset.move];
-  btn.addEventListener('pointerdown', e => { e.preventDefault(); keys.add(key); targetStationId = null; });
-  btn.addEventListener('pointerup', () => keys.delete(key));
-  btn.addEventListener('pointerleave', () => keys.delete(key));
-}
-
-for (const btn of document.querySelectorAll('[data-look]')) {
-  const direction = btn.dataset.look === 'left' ? -1 : 1;
+for (const btn of document.querySelectorAll('[data-tour]')) {
+  const direction = btn.dataset.tour === 'prev' ? -1 : 1;
   btn.addEventListener('click', e => {
     e.preventDefault();
-    player.angle += direction * 0.26;
-    targetStationId = null;
+    navigateStation(direction);
   });
 }
 
 renderStationButtons();
 resizeCanvas();
-setInfo(stations[0], false);
+focusStation('spawn');
 requestAnimationFrame(loop);
