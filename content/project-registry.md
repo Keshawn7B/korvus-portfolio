@@ -33,12 +33,12 @@ Use this file as the source of truth for projects that may become portfolio entr
 
 - name: "Personal Portfolio Site"
   type: "coding"
-  status: "idea"
-  one_liner: "A public site to showcase coding, AI automation, and creative projects."
-  tech: ["Astro or Next.js", "Tailwind CSS", "Markdown/MDX"]
+  status: "in-progress"
+  one_liner: "A public site to showcase coding, AI automation, creative projects, and an interactive Minecraft-style bio world."
+  tech: ["HTML", "CSS", "Canvas JavaScript", "Astro or Next.js later", "Markdown/MDX"]
   repo: ""
-  demo: ""
+  demo: "demos/minecraft-bio-section/"
   screenshots: []
-  why_it_matters: "Gives all future projects a professional home."
-  next_action: "Choose stack and create the first local site scaffold."
+  why_it_matters: "Gives all future projects a professional home and lets visitors discover personal/project info through an interactive experience."
+  next_action: "Integrate the Minecraft-style bio section into the main site scaffold once the stack is chosen."
 ```

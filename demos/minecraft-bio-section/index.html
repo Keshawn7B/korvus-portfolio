@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minecraft-Style Interactive Bio Section</title>
+  <meta name="description" content="A blocky interactive portfolio section where visitors walk around a small world and discover real information about the builder." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section class="mc-section" aria-labelledby="mc-title">
+    <div class="hud top-left">
+      <p class="eyebrow">Interactive portfolio section</p>
+      <h1 id="mc-title">Walk through my world</h1>
+      <p class="intro">Use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys to move. Drag / move your mouse to look around. Walk near glowing signs to reveal real info.</p>
+    </div>
+
+    <div class="hud top-right" aria-live="polite">
+      <div class="mini-map" id="miniMap" aria-hidden="true"></div>
+      <p id="positionLabel">Spawn: Portfolio Plaza</p>
+    </div>
+
+    <canvas id="world" width="1280" height="720" aria-label="Interactive blocky world with portfolio stations"></canvas>
+
+    <aside class="info-card" id="infoCard" aria-live="polite">
+      <p class="card-kicker">Approach a sign</p>
+      <h2>Portfolio Plaza</h2>
+      <p>Explore stations about my AI automation work, game-dev goals, creative direction, and what I am learning next.</p>
+      <ul>
+        <li>Move: WASD / arrows</li>
+        <li>Look: mouse / touch drag</li>
+        <li>Interact: walk near signs</li>
+      </ul>
+    </aside>
+
+    <div class="controls" aria-label="Mobile movement controls">
+      <button data-move="forward" aria-label="Move forward">▲</button>
+      <div>
+        <button data-move="left" aria-label="Move left">◀</button>
+        <button data-move="back" aria-label="Move back">▼</button>
+        <button data-move="right" aria-label="Move right">▶</button>
+      </div>
+    </div>
+  </section>
+
+  <noscript>This interactive section needs JavaScript enabled.</noscript>
+  <script src="world.js"></script>
+</body>
+</html>
