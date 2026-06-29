@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Keshawn's Standard Portfolio</title>
+  <meta name="description" content="A standard portfolio page for Keshawn's coding, AI automation, game, and interactive web projects." />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b12;
+      --panel: rgba(14, 22, 34, 0.82);
+      --line: rgba(125, 255, 188, 0.22);
+      --text: #eef7ff;
+      --muted: #a7b4c4;
+      --green: #73ffad;
+      --cyan: #69d7ff;
+      --gold: #ffd36a;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(105, 215, 255, 0.16), transparent 28rem),
+        radial-gradient(circle at 80% 10%, rgba(115, 255, 173, 0.12), transparent 26rem),
+        linear-gradient(135deg, #070a10, #101827 58%, #070a10);
+    }
+
+    a { color: inherit; }
+
+    .page {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0 56px;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .brand {
+      font-weight: 900;
+      letter-spacing: .02em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .pill,
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.055);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .button.primary {
+      color: #041109;
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      border: none;
+      box-shadow: 0 18px 50px rgba(105,215,255,.15);
+    }
+
+    .hero {
+      padding: 32px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: var(--panel);
+      box-shadow: 0 24px 80px rgba(0,0,0,.28);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--green);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: .78rem;
+      font-weight: 900;
+    }
+
+    h1 {
+      max-width: 860px;
+      margin: 0;
+      font-size: clamp(2.3rem, 7vw, 5rem);
+      line-height: .95;
+      letter-spacing: -0.07em;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.02rem, 2.2vw, 1.25rem);
+      line-height: 1.65;
+    }
+
+    .section-title {
+      margin: 46px 0 18px;
+      font-size: clamp(1.55rem, 4vw, 2.4rem);
+      letter-spacing: -0.04em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 24px;
+      background: rgba(255,255,255,.045);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 1.25rem;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .card p { margin: 0 0 14px; }
+    .card ul { margin: 0; padding-left: 1.1rem; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 760px) {
+      .page { padding-top: 20px; }
+      .nav { align-items: flex-start; flex-direction: column; margin-bottom: 28px; }
+      .nav-links { justify-content: flex-start; }
+      .hero { padding: 22px; border-radius: 24px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="nav" aria-label="Portfolio navigation">
+      <a class="brand" href="index.html">Keshawn Portfolio</a>
+      <div class="nav-links">
+        <a class="pill" href="index.html">Home</a>
+        <a class="pill" href="demos/minecraft-bio-section/">Optional interactive bio</a>
+      </div>
+    </nav>
+
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">Standard portfolio</p>
+      <h1 id="title">Builder work, projects, and experiments — without requiring the interactive tour.</h1>
+      <p class="lead">This page is the regular portfolio view. It gives visitors the direct version first: what I build, what I am learning, and which projects matter. The interactive bio is still available as an optional experience.</p>
+      <div class="actions">
+        <a class="button primary" href="#projects">See projects</a>
+        <a class="button" href="demos/minecraft-bio-section/">Try the optional interactive bio</a>
+      </div>
+    </section>
+
+    <h2 class="section-title" id="projects">Featured projects</h2>
+    <section class="grid" aria-label="Featured projects">
+      <article class="card">
+        <h3>Korvus / Hermes Personal AI System</h3>
+        <p>A practical personal AI assistant setup that runs through Hermes across Linux, Telegram, Discord, Notion, Gmail, cron scripts, and isolated profiles.</p>
+        <ul>
+          <li>Focus: real automation instead of just chatbot replies.</li>
+          <li>Tech: Hermes Agent, Linux, Python, Telegram, Discord, Notion API, Gmail API, cron, Docker.</li>
+          <li>Why it matters: shows useful local system integration and privacy-aware profile separation.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Personal Portfolio Site</h3>
+        <p>A public home for coding, AI automation, creative projects, game direction, and optional interactive demos.</p>
+        <ul>
+          <li>Focus: a standard portfolio that still has personality.</li>
+          <li>Tech: HTML, CSS, Canvas JavaScript, Markdown content.</li>
+          <li>Why it matters: gives future projects a clean place to live.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Optional Interactive Bio</h3>
+        <p>A playful side experience where visitors explore stations that explain real public-safe information about my projects, tools, and build style.</p>
+        <ul>
+          <li>Focus: discovery, not replacing the normal portfolio.</li>
+          <li>Includes direct station controls and mobile-friendly interaction.</li>
+          <li><a href="demos/minecraft-bio-section/">Open the interactive bio →</a></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h3>Game + Roblox Direction</h3>
+        <p>Zero-budget action game work focused on fast iteration, playable polish, compact HUDs, and practical Linux-friendly tooling.</p>
+        <ul>
+          <li>Focus: making game ideas playable quickly.</li>
+          <li>Tech direction: Roblox, Rojo, Vinegar, Lua/Luau.</li>
+          <li>Next: turn prototypes into stronger case studies with screenshots and clips.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

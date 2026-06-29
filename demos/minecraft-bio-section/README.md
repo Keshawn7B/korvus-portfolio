@@ -1,4 +1,4 @@
-# Minecraft-Style Interactive Bio Section
+# Interactive Bio Section
 
 A drop-in static demo for a portfolio website: visitors walk around a small blocky world and discover real information at glowing sign stations.
 
