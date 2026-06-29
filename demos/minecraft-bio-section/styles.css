@@ -179,7 +179,8 @@ kbd {
 }
 
 .controls button,
-.station-list button {
+.station-list button,
+.detail-toggle {
   min-width: 48px;
   min-height: 48px;
   margin: 3px;
@@ -234,62 +235,118 @@ kbd {
 }
 
 @media (max-width: 820px) {
-  body { overflow: auto; }
+  body { overflow: hidden; }
   .mc-section { min-height: 100svh; height: 100svh; }
   .top-left {
-    top: 10px;
+    top: max(8px, env(safe-area-inset-top));
     left: 10px;
     right: 10px;
     width: auto;
-    padding: 12px;
+    padding: 10px 14px;
+    border-radius: 20px;
+    background: rgba(7, 19, 14, 0.62);
   }
-  .top-left .eyebrow { display: none; }
-  h1 { font-size: clamp(1.8rem, 9vw, 3rem); }
-  .intro { margin: 8px 0 0; font-size: 0.9rem; }
+  .top-left .eyebrow,
+  .intro { display: none; }
+  h1 { font-size: clamp(1.55rem, 7vw, 2.35rem); letter-spacing: -0.055em; }
   .top-right { display: none; }
   .info-card {
     left: 10px;
     right: 10px;
-    bottom: 218px;
+    bottom: calc(166px + env(safe-area-inset-bottom));
     width: auto;
-    min-height: 150px;
-    max-height: 34svh;
-    overflow: auto;
-    padding: 16px;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+    padding: 12px 92px 12px 14px;
+    border-radius: 20px;
+    background: rgba(6, 17, 13, 0.72);
   }
-  .info-card h2 { font-size: 1.4rem; }
-  .info-card p,
-  .info-card li { font-size: 0.92rem; }
+  .info-card h2 { font-size: 1.12rem; line-height: 1.08; }
+  .info-card .card-kicker { margin-bottom: 4px; font-size: 0.58rem; }
+  .info-card:not(.expanded) p,
+  .info-card:not(.expanded) ul { display: none; }
+  .info-card.expanded {
+    bottom: calc(104px + env(safe-area-inset-bottom));
+    max-height: 46svh;
+    overflow: auto;
+    padding: 14px;
+  }
+  .info-card.expanded p,
+  .info-card.expanded li { font-size: 0.88rem; }
+  .detail-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 68px;
+    min-height: 40px;
+    margin: 0;
+    border-radius: 999px;
+    font-size: 0.78rem;
+  }
+  .info-card.expanded .detail-toggle {
+    top: 10px;
+    transform: none;
+  }
   .controls {
     display: block;
     left: 10px;
-    bottom: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    padding: 8px;
+    border-radius: 20px;
+    background: rgba(6, 17, 13, 0.58);
   }
+  .controls button {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    border-radius: 14px;
+    font-size: 0.98rem;
+  }
+  .look-row { gap: 4px; margin-bottom: 0; }
   .station-drawer {
     right: 10px;
-    left: auto;
-    bottom: 10px;
-    width: min(50vw, 260px);
-    max-height: 160px;
-    overflow: auto;
-    padding: 10px;
+    left: 156px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    width: auto;
+    max-height: 92px;
+    overflow: hidden;
+    padding: 8px;
+    border-radius: 20px;
+    background: rgba(6, 17, 13, 0.58);
   }
-  .station-list { gap: 4px; }
+  .station-drawer .card-kicker { display: none; }
+  .station-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scroll-snap-type: x proximity;
+  }
   .station-list button {
-    width: 100%;
+    flex: 0 0 126px;
+    width: 126px;
     min-height: 38px;
     margin: 0;
     padding: 8px 10px;
-    font-size: 0.78rem;
+    border-radius: 14px;
+    font-size: 0.76rem;
+    scroll-snap-align: start;
   }
 }
 
 @media (max-width: 420px) {
-  .intro { display: none; }
-  .info-card { bottom: 210px; max-height: 34svh; }
-  .controls button { width: 50px; height: 50px; }
-  .station-drawer { width: calc(100vw - 150px); }
-  .station-drawer .card-kicker { font-size: 0.62rem; }
+  .controls button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .station-drawer { left: 146px; }
+  .station-list button { flex-basis: 118px; width: 118px; }
 }
 
 @media (max-height: 680px) and (min-width: 821px) {
